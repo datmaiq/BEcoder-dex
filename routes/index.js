@@ -1,9 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const fs = require("fs");
-const pokemonapi = require("./pokemon.api.js");
 
-const { parse } = require("csv-parse");
 const { createPokemonSchema } = require("./schema.js");
 
 /* GET home page. */
