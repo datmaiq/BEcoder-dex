@@ -13,7 +13,6 @@ router.get("/", function (req, res, next) {
 
 router.get("/pokemons", function (req, res) {
   const data = [];
-
   let count = 0;
   fs.createReadStream("./archive/pokemon.csv")
     .pipe(parse({ delimiter: ",", from_line: 2 }))
@@ -22,21 +21,38 @@ router.get("/pokemons", function (req, res) {
       data.push({
         id: count,
         name: row[0],
+        types: [row[1].toLowerCase(), row[2].toLowerCase()],
         url: `http://localhost:8000/${row[0]}.png`,
       });
     })
     .on("end", () => {
-      const { name } = req.query;
+      const { page, limit, search } = req.query;
+      console.log(page);
+      let pageNum = 1;
+      let limitPage = 19;
+      if (!page || page < 1) {
+        page = pageNum;
+      }
+      if (!limit || limit < 1) {
+        limit = limitPage;
+      }
+      let offset = limit * (page - 1);
       let result = {};
-      if (name && name.trim() !== "") {
+      if (search && search.trim() !== "") {
         const pokemonSearch = data.filter(
           (e) =>
-            e?.name.toLowerCase().includes(name.toLowerCase()) ||
-            e?.types.includes(name)
+            e?.name.toLowerCase().includes(search.toLowerCase()) ||
+            e?.types.includes(search)
         );
-        result = { data: pokemonSearch, totalPokemons: pokemonSearch.length };
+        result = {
+          data: pokemonSearch.slice(offset, offset + limit),
+          totalPokemons: pokemonSearch.length,
+        };
       } else {
-        result = { data, totalPokemons: data.length };
+        result = {
+          data: data.slice(offset, offset + limit),
+          totalPokemons: data.length,
+        };
       }
       res.status(200).send(result);
     });
@@ -50,10 +66,13 @@ router.get("/pokemons/:id", function (req, res, next) {
     .pipe(parse({ delimiter: ",", from_line: 2 }))
     .on("data", (row) => {
       count++;
+      let typeTemp = [];
+      row[1].toLowerCase() === "" ? "" : typeTemp.push(row[1].toLowerCase());
+      row[2].toLowerCase() === "" ? "" : typeTemp.push(row[2].toLowerCase());
       data.push({
         id: count,
         name: row[0],
-        types: [row[1], row[2]],
+        types: [...typeTemp],
         url: `http://localhost:8000/${row[0]}.png`,
       });
     })
@@ -65,21 +84,29 @@ router.get("/pokemons/:id", function (req, res, next) {
         switch (pokemonId) {
           case 0:
             result = {
-              data: [
-                data[data.length - 1],
-                data[pokemonId],
-                data[pokemonId + 1],
-              ],
+              data: {
+                previousPokemon: data[data.length - 1],
+                pokemon: data[pokemonId],
+                nextPokemon: data[pokemonId + 1],
+              },
             };
             break;
           case data.length - 1:
             result = {
-              data: [data[pokemonId - 1], data[pokemonId], data[0]],
+              data: {
+                previousPokemon: data[pokemonId - 1],
+                pokemon: data[pokemonId],
+                nextPokemon: data[0],
+              },
             };
             break;
           default:
             result = {
-              data: [data[pokemonId - 1], data[pokemonId], data[pokemonId + 1]],
+              data: {
+                previousPokemon: data[pokemonId - 1],
+                pokemon: data[pokemonId],
+                nextPokemon: data[0],
+              },
             };
         }
       } else {
