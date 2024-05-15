@@ -29,13 +29,13 @@ router.get("/pokemons", function (req, res) {
       console.log(page);
       let pageNum = 1;
       let limitPage = 19;
-      if (!page || page < 1) {
-        page = pageNum;
+      if (page && page > 0) {
+        pageNum = page;
       }
-      if (!limit || limit < 1) {
-        limit = limitPage;
+      if (limit && limit > 0) {
+        limitPage = limit;
       }
-      let offset = limit * (page - 1);
+      let offset = limitPage * (pageNum - 1);
       let result = {};
       if (search && search.trim() !== "") {
         const pokemonSearch = data.filter(
@@ -44,12 +44,12 @@ router.get("/pokemons", function (req, res) {
             e?.types.includes(search)
         );
         result = {
-          data: pokemonSearch.slice(offset, offset + limit),
+          data: pokemonSearch.slice(offset, offset + limitPage),
           totalPokemons: pokemonSearch.length,
         };
       } else {
         result = {
-          data: data.slice(offset, offset + limit),
+          data: data.slice(offset, offset + limitPage),
           totalPokemons: data.length,
         };
       }
