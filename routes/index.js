@@ -142,7 +142,6 @@ router.post("/pokemons", function (req, res, next) {
       });
     })
     .on("end", () => {
-      console.log(data);
       const pokemonExists = data.some(
         (pokemon) =>
           pokemon.name.toLowerCase() === req.body.name.toLowerCase() ||
