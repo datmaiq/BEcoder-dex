@@ -3,7 +3,7 @@ var router = express.Router();
 const fs = require("fs");
 
 const { parse } = require("csv-parse");
-const { createPokemon } = require("./schema.js");
+const { createPokemonSchema } = require("./schema.js");
 
 router.get("/", function (req, res, next) {
   res.status(200).send("Welcome to DatMai");
@@ -20,8 +20,8 @@ router.get("/pokemons", function (req, res) {
         id: count,
         name: row[0],
         types: [row[1].toLowerCase(), row[2].toLowerCase()],
-        // url: `https://becoder-dex.onrender.com/${row[0]}.png`,
-        url: `http://localhost:8000//${row[0]}.png`,
+        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
+        // url: `http://localhost:8000//${row[0]}.png`,
       });
     })
     .on("end", () => {
@@ -137,7 +137,8 @@ router.post("/pokemons", function (req, res, next) {
         id: count,
         name: row[0],
         types: [row[1], row[2]],
-        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
+        // url: `https://becoder-dex.onrender.com/${row[0]}.png`,
+        url: `http://localhost:8000//${row[0]}.png`,
       });
     })
     .on("end", () => {
