@@ -3,9 +3,8 @@ var router = express.Router();
 const fs = require("fs");
 
 const { parse } = require("csv-parse");
-const { createPokemonSchema } = require("./schema.js");
+const { createPokemon } = require("./schema.js");
 
-/* GET home page. */
 router.get("/", function (req, res, next) {
   res.status(200).send("Welcome to DatMai");
 });
@@ -21,11 +20,12 @@ router.get("/pokemons", function (req, res) {
         id: count,
         name: row[0],
         types: [row[1].toLowerCase(), row[2].toLowerCase()],
-        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
+        // url: `https://becoder-dex.onrender.com/${row[0]}.png`,
+        url: `http://localhost:8000//${row[0]}.png`,
       });
     })
     .on("end", () => {
-      const { page, limit, search } = req.query;
+      const { page, limit, search, type } = req.query;
       console.log(page);
       let pageNum = 1;
       let limitPage = 19;
@@ -46,6 +46,12 @@ router.get("/pokemons", function (req, res) {
         result = {
           data: pokemonSearch.slice(offset, offset + limitPage),
           totalPokemons: pokemonSearch.length,
+        };
+      } else if (type && type.trim() !== "") {
+        const pokemonType = data.filter((e) => e.types.includes(type));
+        result = {
+          data: pokemonType.slice(offset, offset + limitPage),
+          totalPokemons: pokemonType.length,
         };
       } else {
         result = {
@@ -120,33 +126,6 @@ router.post("/pokemons", function (req, res, next) {
   if (error) {
     res.status(400).json(error.message);
   }
-  // if (!req.body.name || req.body.name == "") {
-  //   res.status(400).send("Error Name");
-  //   return;
-  // }
-  // if (!req.body.id || req.body.id == 0) {
-  //   res.status(404).send("Error ID");
-  //   return;
-  // }
-  // if (
-  //   !req.body.types ||
-  //   !Array.isArray(req.body.types) ||
-  //   req.body.types.length > 2 ||
-  //   req.body.types.length == 0
-  // ) {
-  //   res.status(400).send("Error Types");
-  //   return;
-  // } else {
-  //   const result = req.body.types.map((e) => pokemonTypes.includes(e));
-  //   if (result.some((e) => e == false)) {
-  //     res.status(400).send("Invalid Types");
-  //     return;
-  //   }
-  // }
-  // if (!req.body.url || req.body.url == "") {
-  //   res.status(400).send("Error URL");
-  //   return;
-  // }
 
   let data = [];
   let count = 0;

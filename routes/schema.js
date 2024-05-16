@@ -29,4 +29,5 @@ const createPokemonSchema = Joi.object().keys({
   url: Joi.string().required(),
   evolution: Joi.string(),
 });
+
 module.exports = { createPokemonSchema };
