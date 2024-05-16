@@ -137,8 +137,8 @@ router.post("/pokemons", function (req, res, next) {
         id: count,
         name: row[0],
         types: [row[1], row[2]],
-        // url: `https://becoder-dex.onrender.com/${row[0]}.png`,
-        url: `http://localhost:8000//${row[0]}.png`,
+        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
+        // url: `http://localhost:8000//${row[0]}.png`,
       });
     })
     .on("end", () => {
