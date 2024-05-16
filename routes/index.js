@@ -21,7 +21,7 @@ router.get("/pokemons", function (req, res) {
         id: count,
         name: row[0],
         types: [row[1].toLowerCase(), row[2].toLowerCase()],
-        url: `http://localhost:8000/${row[0]}.png`,
+        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
       });
     })
     .on("end", () => {
@@ -72,7 +72,7 @@ router.get("/pokemons/:id", function (req, res, next) {
         id: count,
         name: row[0],
         types: [...typeTemp],
-        url: `http://localhost:8000/${row[0]}.png`,
+        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
       });
     })
     .on("end", () => {
@@ -158,7 +158,7 @@ router.post("/pokemons", function (req, res, next) {
         id: count,
         name: row[0],
         types: [row[1], row[2]],
-        url: `http://localhost:8000/${row[0]}.png`,
+        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
       });
     })
     .on("end", () => {
@@ -213,7 +213,7 @@ router.delete("/pokemons/:id", function (req, res, next) {
         name: row[0],
         types: [row[1], row[2]],
         evolution: row[3],
-        url: `http://localhost:8000/${row[0]}.png`,
+        url: `https://becoder-dex.onrender.com/${row[0]}.png`,
       });
     })
     .on("end", () => {
