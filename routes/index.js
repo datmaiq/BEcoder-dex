@@ -21,7 +21,6 @@ router.get("/pokemons", function (req, res) {
         name: row[0],
         types: [row[1].toLowerCase(), row[2].toLowerCase()],
         url: `https://becoder-dex.onrender.com/${row[0]}.png`,
-        // url: `http://localhost:8000//${row[0]}.png`,
       });
     })
     .on("end", () => {
@@ -65,7 +64,6 @@ router.get("/pokemons", function (req, res) {
 
 router.get("/pokemons/:id", function (req, res, next) {
   const data = [];
-
   let count = 0;
   fs.createReadStream("./archive/pokemon.csv")
     .pipe(parse({ delimiter: ",", from_line: 2 }))
@@ -138,7 +136,6 @@ router.post("/pokemons", function (req, res, next) {
         name: row[0],
         types: [row[1], row[2]],
         url: `https://becoder-dex.onrender.com/${row[0]}.png`,
-        // url: `http://localhost:8000//${row[0]}.png`,
       });
     })
     .on("end", () => {
@@ -161,8 +158,8 @@ router.post("/pokemons", function (req, res, next) {
 
         const csvContent = `\n${newPokemon.name},${newPokemon.types[0]},${
           newPokemon.types[1] || ""
-        },${newPokemon.evolution || ""}`;
-
+        },${newPokemon.evolution || ""},`;
+        console.log(csvContent);
         fs.appendFile("archive/pokemon.csv", csvContent, (err) => {
           if (err) {
             console.error(err);
